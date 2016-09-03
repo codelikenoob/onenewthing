@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   scope module: 'web' do
+    root to: 'static_pages#welcome'
     # Devise routing start
     devise_for :users, path: '',
       controllers: {
