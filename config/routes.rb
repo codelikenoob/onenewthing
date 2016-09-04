@@ -9,8 +9,8 @@ Rails.application.routes.draw do
       },
       path_names: {
         sign_up: 'registration',
-        sign_out: 'logout',
-        sign_in: 'login'
+        sign_out: 'log_out',
+        sign_in: 'log_in'
       }
       # Devise routing end
   end

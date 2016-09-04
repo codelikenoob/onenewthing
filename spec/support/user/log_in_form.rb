@@ -1,8 +1,8 @@
-class LoginForm
+class LogInForm
   include Capybara::DSL
 
   def visit_page_direct
-    visit('/login')
+    visit('/log_in')
     self
   end
 
