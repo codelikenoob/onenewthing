@@ -22,6 +22,7 @@ FactoryGirl.define do
   factory :user do
     sequence(:name) { |n| "UserName#{n}" }
     sequence(:email) { |n| "samplemail_#{n}@example.com" }
+    password 'pswd1234'
 
     factory :user_fake do
       name Faker::Name.name

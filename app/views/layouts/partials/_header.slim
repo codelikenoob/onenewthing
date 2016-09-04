@@ -15,7 +15,7 @@ nav.navbar.navbar-default
           p.navbar-text.current-user-name
             = current_user.name
           li
-            = link_to 'Log out', user_session_path, method: :delete
+            = link_to 'Log out', destroy_user_session_path, method: :delete
         - else
           li
             = link_to 'Registration', new_user_registration_path

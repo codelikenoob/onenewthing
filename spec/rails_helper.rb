@@ -13,9 +13,8 @@ Capybara.javascript_driver = :webkit
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
-  # config.include Warden::Test::Helpers
+   config.include Warden::Test::Helpers
   # config.include Devise::Test::ControllerHelpers, type: :controller
-  # config.include Warden::Test::Helpers
 
   config.use_transactional_fixtures = false
   config.infer_spec_type_from_file_location!
@@ -35,6 +34,7 @@ RSpec.configure do |config|
       example.run
     end
   end
+
 end
 
 Shoulda::Matchers.configure do |config|
