@@ -25,7 +25,7 @@ FactoryGirl.define do
     password 'pswd1234'
 
     factory :user_fake do
-      name Faker::Name.name
+      name Faker::Internet.user_name
       email Faker::Internet.email
     end
   end
