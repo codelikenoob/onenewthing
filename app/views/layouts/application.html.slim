@@ -9,6 +9,7 @@ html
     = javascript_include_tag 'application'
     = csrf_meta_tags
   body
+    = render 'layouts/partials/header'
     .container
       = yield
-      / = render 'layouts/footer'
+       /= render 'layouts/footer'
