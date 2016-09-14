@@ -1,24 +1,7 @@
-# README
+#Project description
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+![Trello](https://trello.com/b/8j9K5XaA/onenewthing)
 
-Things you may want to cover:
+#Community Slack
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+![CodeLikeNoob](http://codelikenoob.frey.su/)
