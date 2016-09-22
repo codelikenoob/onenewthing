@@ -42,7 +42,7 @@ describe Web::ThingsController, type: :controller do
       end
       it 'PATCH #update' do
         patch :update, params: { id: thing,
-                                 thing: FactoryGirl.attributes_for(:thing, title: 'New title')} }
+                                 thing: FactoryGirl.attributes_for(:thing, title: 'New title')}
         thing.reload
         expect(thing.title).not_to eq('New title')
       end
@@ -91,5 +91,58 @@ describe Web::ThingsController, type: :controller do
         end
       end
     end
+    context 'user is not occupied thing' do
+      let(:thing) { FactoryGirl.create(:thing) }
+      # TODO: resolve skip
+      context 'redirects to pundit path', skip: 'define pundit path' do
+        after(:each) { expect(response).to redirect_to(PUNDIT_PATH_HERE) }
+        it { get :edit, params: { id: thing } }
+        it { patch :update, params: { id: thing,
+                                      thing: FactoryGirl.attributes_for(:thing, title: 'New title')} }
+        it { delete :destroy, params: { id: thing } }
+      end
+      context 'does not change database' do
+        it 'PATCH #update' do
+          patch :update, params: { id: thing,
+                                   thing: FactoryGirl.attributes_for(:thing, title: 'New title')} }
+          thing.reload
+          expect(thing.title).not_to eq('New title')
+        end
+        it 'DELETE #destroy' do
+          delete :destroy, params: { id: thing }
+          expect(Thing.exists?(thing.id)).to be_truthy
+        end
+      end
+    end
+    context 'user is occupied thing' do
+      let(:thing) { FactoryGirl.create(:thing, users: [user]) }
+      let(:thing_2) { FactoryGirl.create(:thing) }
+
+      context 'redirects', skip: 'decide where to redirect users after actions' do
+      end
+      context 'touch database' do
+        describe 'PATCH #update (title)' do
+          it 'finds appropriate thing' do
+            patch :update, params: { id: thing,
+                                     thing: FactoryGirl.attributes_for(:thing, title: thins_2.title) }
+            expect(thing.users).not_to include(user)
+            expect(thing_2.users).to include(user)
+          end
+          it 'does not find appropriate thing' do
+            patch :update, params: { id: thing,
+                                     thing: FactoryGirl.attributes_for(:thing, title: 'very new title') }
+            expect(thing.users).not_to include(user)
+            expect(user.things.last.title).to eq('very new title')
+          end
+        end
+        describe 'DELETE #destroy' do
+          it 'deletes association' do
+            delete :destroy, params: { id: thing }
+            expect(thing.users).not_to include(user)
+          end
+        end
+      end
+    end
+
   end
 end
