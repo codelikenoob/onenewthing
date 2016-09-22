@@ -3,6 +3,7 @@ require 'rails_helper'
 describe Web::ThingsController, type: :controller do
 
   shared_examples 'public access to things' do
+
     describe 'GET #index' do
       before(:each) { get :index }
 
@@ -34,6 +35,7 @@ describe Web::ThingsController, type: :controller do
         it { delete :destroy, params: { id: thing } }
       end
     end
+
     context 'does not touch database' do
       it 'POST #create' do
         expect {
@@ -64,7 +66,7 @@ describe Web::ThingsController, type: :controller do
       it { expect(assigns(:thing)).to be_a_new(Thing) }
     end
     describe 'POST #create' do
-      context 'valid data' do
+      context 'valid data, unexisting thing' do
         let(:valid_data) { FactoryGirl.attributes_for(:thing) }
 
         it 'redirects to thing#show' do
@@ -75,6 +77,34 @@ describe Web::ThingsController, type: :controller do
           expect {
             post :create, params: { thing: valid_data }
           }.to change(Thing, :count).by(1)
+        end
+        it 'associates user and new thing' do
+          post :create, params: { thing: valid_data }
+          expect(user.things.last.title).to eq(valid_data[:title])
+        end
+      end
+      context 'vaild data, existing thing' do
+        let(:thing) { FactoryGirl.create(:thing) }
+        let(:valid_data) { FactoryGirl.attributes_for(:thing, title: thing.title) }
+
+        it 'redirects to thing#show' do
+          post :create, params: { thing: valid_data }
+          expect(response).to redirect_to(thing_path(assigns[:thing]))
+        end
+        it 'does not create new record in database' do
+          expect {
+            post :create, params: { thing: valid_data }
+          }.not_to change(Thing, :count)
+        end
+        it 'associates user and existing thing' do
+          post :create, params: { thing: valid_data }
+          expect(user.things).to include(thing)
+        end
+        it 'does not associate user if already associated' do
+          user.things << thing
+          expect {
+            post :create, params: { thing: valid_data }
+          }.not_to change(user.things, :count)
         end
       end
       context 'invalid data' do
@@ -91,6 +121,7 @@ describe Web::ThingsController, type: :controller do
         end
       end
     end
+
     context 'user is not occupied thing' do
       let(:thing) { FactoryGirl.create(:thing) }
       # TODO: resolve skip
@@ -114,6 +145,7 @@ describe Web::ThingsController, type: :controller do
         end
       end
     end
+
     context 'user is occupied thing' do
       let(:thing) { FactoryGirl.create(:thing, users: [user]) }
       let(:thing_2) { FactoryGirl.create(:thing) }
