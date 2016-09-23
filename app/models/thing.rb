@@ -9,8 +9,7 @@
 #  updated_at  :datetime         not null
 #
 
-require 'rails_helper'
-
-describe Thing, type: :model do
-  it { have_many(:users).through(:occupation) }
+class Thing < ApplicationRecord
+  has_many :occupations
+  has_many :users, through: :occupations
 end

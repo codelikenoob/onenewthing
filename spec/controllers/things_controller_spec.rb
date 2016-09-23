@@ -135,7 +135,7 @@ describe Web::ThingsController, type: :controller do
       context 'does not change database' do
         it 'PATCH #update' do
           patch :update, params: { id: thing,
-                                   thing: FactoryGirl.attributes_for(:thing, title: 'New title')} }
+                                   thing: FactoryGirl.attributes_for(:thing, title: 'New title')}
           thing.reload
           expect(thing.title).not_to eq('New title')
         end

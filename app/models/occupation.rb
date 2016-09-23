@@ -9,9 +9,7 @@
 #  updated_at :datetime         not null
 #
 
-require 'rails_helper'
-
-describe Occupation, type: :model do
-  it { belong_to(:user) }
-  it { belong_to(:thing) }
+class Occupation < ApplicationRecord
+  belongs_to :user
+  belongs_to :thing
 end

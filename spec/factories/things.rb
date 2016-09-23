@@ -8,9 +8,9 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #
-
-require 'rails_helper'
-
-describe Thing, type: :model do
-  it { have_many(:users).through(:occupation) }
+FactoryGirl.define do
+  factory :thing do
+    sequence(:title) { |n| "title_#{n}" }
+    description 'test_description_string'
+  end
 end
