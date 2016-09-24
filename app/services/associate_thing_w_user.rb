@@ -13,7 +13,7 @@ class AssociateThingWUser
   end
 
   def call
-    return false unless thing && user.things.exclude?(thing)
+    return false if !thing || user.things.include?(thing)
     user.things << thing
     thing
   end
