@@ -12,4 +12,6 @@
 class Thing < ApplicationRecord
   has_many :occupations
   has_many :users, through: :occupations
+
+  validates :title, presence: true, uniqueness: true
 end

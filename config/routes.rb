@@ -13,6 +13,7 @@ Rails.application.routes.draw do
         sign_in: 'login'
       }
       # Devise routing end
+      resources :things
   end
 end
 

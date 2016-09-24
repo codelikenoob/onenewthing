@@ -8,7 +8,7 @@ describe Web::ThingsController, type: :controller do
       before(:each) { get :index }
 
       it { expect(response).to render_template(:index) }
-      it { expect(assigns(:thing)).to eq(Thing.all) }
+      it { expect(assigns(:things)).to eq(Thing.all) }
     end
 
     describe 'GET #show' do
@@ -40,7 +40,7 @@ describe Web::ThingsController, type: :controller do
       it 'POST #create' do
         expect {
           post :create, params: { thing: FactoryGirl.attributes_for(:thing) }
-        }.not_to change(Thing, :cont)
+        }.not_to change(Thing, :count)
       end
       it 'PATCH #update' do
         patch :update, params: { id: thing,
@@ -71,7 +71,9 @@ describe Web::ThingsController, type: :controller do
 
         it 'redirects to thing#show' do
           post :create, params: { thing: valid_data }
-          expect(response).to redirect_to(thing_path(assigns[:thing]))
+          # not using assigns[:thing], because creating of thing goes in service
+          # object, and there is no reason to create instance variable
+          expect(response).to redirect_to(thing_path(Thing.find_by_title(valid_data[:title])))
         end
         it 'creates new record in database' do
           expect {
@@ -84,12 +86,14 @@ describe Web::ThingsController, type: :controller do
         end
       end
       context 'vaild data, existing thing' do
-        let(:thing) { FactoryGirl.create(:thing) }
+        let!(:thing) { FactoryGirl.create(:thing) }
         let(:valid_data) { FactoryGirl.attributes_for(:thing, title: thing.title) }
 
         it 'redirects to thing#show' do
           post :create, params: { thing: valid_data }
-          expect(response).to redirect_to(thing_path(assigns[:thing]))
+          # not using assigns[:thing], because creating of thing goes in service
+          # object, and there is no reason to create instance variable
+          expect(response).to redirect_to(thing_path(Thing.find_by_title(valid_data[:title])))
         end
         it 'does not create new record in database' do
           expect {
@@ -152,6 +156,14 @@ describe Web::ThingsController, type: :controller do
 
       context 'redirects', skip: 'decide where to redirect users after actions' do
       end
+
+      context 'assigns right things to instance var' do
+        it 'GET #edit' do
+          get :edit, params: { id: thing }
+          expect(assigns(:thing)).to eq(thing)
+        end
+      end
+
       context 'touch database' do
         describe 'PATCH #update (title)' do
           it 'finds appropriate thing' do
