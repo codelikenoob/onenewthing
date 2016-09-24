@@ -13,7 +13,7 @@ class Web::ThingsController < Web::ApplicationController
   end
 
   def create
-    thing = CreateOrAssociateThingWUser.new(current_user, thing_params).call
+    thing = Thing.create_or_associate(thing_params, current_user)
     if thing
       redirect_to thing_path(thing)
     else
