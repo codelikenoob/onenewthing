@@ -1,5 +1,5 @@
 class Web::ThingsController < Web::ApplicationController
-  before_action :set_thing, only: [:show]
+  before_action :set_thing, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_user!, except: [:index, :show]
 
   def index
@@ -21,11 +21,23 @@ class Web::ThingsController < Web::ApplicationController
     end
   end
 
-  def edit; end
+  def edit
+    authorize @thing
+  end
 
-  def update; end
+  def update
+    authorize @thing
+    if Thing.create_or_associate(thing_params, current_user)
+      current_user.things.delete(@thing)
+    else
+      render :edit
+    end
+  end
 
-  def destroy; end
+  def destroy
+    authorize @thing
+    @thing.users.delete(current_user)
+  end
 
   private
 

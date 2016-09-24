@@ -128,9 +128,8 @@ describe Web::ThingsController, type: :controller do
 
     context 'user is not occupied thing' do
       let(:thing) { FactoryGirl.create(:thing) }
-      # TODO: resolve skip
-      context 'redirects to pundit path', skip: 'define pundit path' do
-        after(:each) { expect(response).to redirect_to(PUNDIT_PATH_HERE) }
+      context 'redirects to pundit path' do
+        after(:each) { expect(response).to redirect_to(root_path) }
         it { get :edit, params: { id: thing } }
         it { patch :update, params: { id: thing,
                                       thing: FactoryGirl.attributes_for(:thing, title: 'New title')} }
@@ -151,8 +150,8 @@ describe Web::ThingsController, type: :controller do
     end
 
     context 'user is occupied thing' do
-      let(:thing) { FactoryGirl.create(:thing, users: [user]) }
-      let(:thing_2) { FactoryGirl.create(:thing) }
+      let!(:thing) { FactoryGirl.create(:thing, users: [user]) }
+      let!(:thing_2) { FactoryGirl.create(:thing) }
 
       context 'redirects', skip: 'decide where to redirect users after actions' do
       end
@@ -168,13 +167,15 @@ describe Web::ThingsController, type: :controller do
         describe 'PATCH #update (title)' do
           it 'finds appropriate thing' do
             patch :update, params: { id: thing,
-                                     thing: FactoryGirl.attributes_for(:thing, title: thins_2.title) }
+                                     thing: FactoryGirl.attributes_for(:thing, title: thing_2.title) }
+            thing.reload
             expect(thing.users).not_to include(user)
             expect(thing_2.users).to include(user)
           end
           it 'does not find appropriate thing' do
             patch :update, params: { id: thing,
                                      thing: FactoryGirl.attributes_for(:thing, title: 'very new title') }
+            thing.reload
             expect(thing.users).not_to include(user)
             expect(user.things.last.title).to eq('very new title')
           end
@@ -182,7 +183,24 @@ describe Web::ThingsController, type: :controller do
         describe 'DELETE #destroy' do
           it 'deletes association' do
             delete :destroy, params: { id: thing }
+            thing.reload
             expect(thing.users).not_to include(user)
+          end
+        end
+      end
+      context 'does not touch database' do
+        describe 'PATCH #update' do
+          it 'renders :edit template' do
+            patch :update, params: { id: thing,
+                                     thing: FactoryGirl.attributes_for(:thing, title: '') }
+            expect(response).to render_template(:edit)
+          end
+          it 'finds appropriate thing' do
+            patch :update, params: { id: thing,
+                                     thing: FactoryGirl.attributes_for(:thing, title: '') }
+            thing.reload
+            expect(thing.users).to include(user)
+            expect(user.things.last.title).not_to eq('')
           end
         end
       end
