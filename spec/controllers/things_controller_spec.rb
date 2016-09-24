@@ -3,7 +3,6 @@ require 'rails_helper'
 describe Web::ThingsController, type: :controller do
 
   shared_examples 'public access to things' do
-
     describe 'GET #index' do
       before(:each) { get :index }
 

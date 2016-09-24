@@ -15,7 +15,7 @@ class Thing < ApplicationRecord
 
   validates :title, presence: true, uniqueness: true
 
-  def create(user=nil)
+  def create(user = nil)
     if self.save
       user.associate(self) if user
       self
@@ -32,5 +32,4 @@ class Thing < ApplicationRecord
     return created if created
     false
   end
-
 end

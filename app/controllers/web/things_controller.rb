@@ -47,9 +47,6 @@ class Web::ThingsController < Web::ApplicationController
 
   def thing_params
     params.require(:thing)
-      .permit(:title, :description)
+          .permit(:title, :description)
   end
-
-
-
 end
