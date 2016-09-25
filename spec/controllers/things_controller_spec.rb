@@ -11,7 +11,7 @@ describe Web::ThingsController, type: :controller do
     end
 
     describe 'GET #show' do
-      let(:thing) { FactoryGirl.create(:thing) }
+      let(:thing) { create(:thing) }
       before(:each) { get :show, params: { id: thing } }
 
       it { expect(response).to render_template(:show) }
@@ -21,28 +21,28 @@ describe Web::ThingsController, type: :controller do
 
   describe 'guest user' do
     it_behaves_like 'public access to things'
-    let(:thing) { FactoryGirl.create(:thing) }
+    let(:thing) { create(:thing) }
 
     describe 'CRUD methods' do
       context 'redirects to login page' do
         after(:each) { expect(response).to redirect_to(new_user_session_url) }
         it { get :new }
-        it { post :create, params: { thing: FactoryGirl.attributes_for(:thing) } }
+        it { post :create, params: { thing: attributes_for(:thing) } }
         it { get :edit, params: { id: thing } }
         it { patch :update, params: { id: thing,
-        thing: FactoryGirl.attributes_for(:thing, title: 'New title')} }
+                                      thing: attributes_for(:thing, title: 'New title')} }
         it { delete :destroy, params: { id: thing } }
       end
 
       context 'does not touch database' do
         it 'POST #create' do
           expect {
-            post :create, params: { thing: FactoryGirl.attributes_for(:thing) }
+            post :create, params: { thing: attributes_for(:thing) }
           }.not_to change(Thing, :count)
         end
         it 'PATCH #update' do
           patch :update, params: { id: thing,
-          thing: FactoryGirl.attributes_for(:thing, title: 'New title')}
+                                   thing: attributes_for(:thing, title: 'New title')}
           thing.reload
           expect(thing.title).not_to eq('New title')
         end
@@ -55,7 +55,7 @@ describe Web::ThingsController, type: :controller do
   end
 
   describe 'authenticated user' do
-    let(:user) { FactoryGirl.create(:user) }
+    let(:user) { create(:user) }
     before { sign_in(user) }
     it_behaves_like 'public access to things'
 
@@ -66,7 +66,7 @@ describe Web::ThingsController, type: :controller do
     end
     describe 'POST #create' do
       context 'valid data, unexisting thing' do
-        let(:valid_data) { FactoryGirl.attributes_for(:thing) }
+        let(:valid_data) { attributes_for(:thing) }
 
         it 'redirects to thing#show' do
           post :create, params: { thing: valid_data }
@@ -85,8 +85,8 @@ describe Web::ThingsController, type: :controller do
         end
       end
       context 'vaild data, existing thing' do
-        let!(:thing) { FactoryGirl.create(:thing) }
-        let(:valid_data) { FactoryGirl.attributes_for(:thing, title: thing.title) }
+        let!(:thing) { create(:thing) }
+        let(:valid_data) { attributes_for(:thing, title: thing.title) }
 
         it 'redirects to thing#show' do
           post :create, params: { thing: valid_data }
@@ -111,7 +111,7 @@ describe Web::ThingsController, type: :controller do
         end
       end
       context 'invalid data' do
-        let(:invalid_data) { FactoryGirl.attributes_for(:thing, title: '') }
+        let(:invalid_data) { attributes_for(:thing, title: '') }
 
         it 'renders :new template' do
           post :create, params: { thing: invalid_data }
@@ -126,18 +126,18 @@ describe Web::ThingsController, type: :controller do
     end
 
     context 'user is not occupied thing' do
-      let(:thing) { FactoryGirl.create(:thing) }
+      let(:thing) { create(:thing) }
       context 'redirects to pundit path' do
         after(:each) { expect(response).to redirect_to(root_path) }
         it { get :edit, params: { id: thing } }
         it { patch :update, params: { id: thing,
-        thing: FactoryGirl.attributes_for(:thing, title: 'New title')} }
+                                      thing: attributes_for(:thing, title: 'New title')} }
         it { delete :destroy, params: { id: thing } }
       end
       context 'does not change database' do
         it 'PATCH #update' do
           patch :update, params: { id: thing,
-          thing: FactoryGirl.attributes_for(:thing, title: 'New title')}
+                                   thing: attributes_for(:thing, title: 'New title')}
           thing.reload
           expect(thing.title).not_to eq('New title')
         end
@@ -149,10 +149,11 @@ describe Web::ThingsController, type: :controller do
     end
 
     context 'user is occupied thing' do
-      let!(:thing) { FactoryGirl.create(:thing, users: [user]) }
-      let!(:thing_2) { FactoryGirl.create(:thing) }
+      let!(:thing) { create(:thing, users: [user]) }
+      let!(:thing_2) { create(:thing) }
 
       context 'redirects', skip: 'decide where to redirect users after actions' do
+        # TODO
       end
 
       context 'assigns right things to instance var' do
@@ -166,14 +167,14 @@ describe Web::ThingsController, type: :controller do
         describe 'PATCH #update (title)' do
           it 'finds appropriate thing' do
             patch :update, params: { id: thing,
-            thing: FactoryGirl.attributes_for(:thing, title: thing_2.title) }
+                                     thing: attributes_for(:thing, title: thing_2.title) }
             thing.reload
             expect(thing.users).not_to include(user)
             expect(thing_2.users).to include(user)
           end
           it 'does not find appropriate thing' do
             patch :update, params: { id: thing,
-            thing: FactoryGirl.attributes_for(:thing, title: 'very new title') }
+                                     thing: attributes_for(:thing, title: 'very new title') }
             thing.reload
             expect(thing.users).not_to include(user)
             expect(user.things.last.title).to eq('very new title')
@@ -191,12 +192,12 @@ describe Web::ThingsController, type: :controller do
         describe 'PATCH #update' do
           it 'renders :edit template' do
             patch :update, params: { id: thing,
-            thing: FactoryGirl.attributes_for(:thing, title: '') }
+                                     thing: attributes_for(:thing, title: '') }
             expect(response).to render_template(:edit)
           end
           it 'finds appropriate thing' do
             patch :update, params: { id: thing,
-            thing: FactoryGirl.attributes_for(:thing, title: '') }
+                                     thing: attributes_for(:thing, title: '') }
             thing.reload
             expect(thing.users).to include(user)
             expect(user.things.last.title).not_to eq('')
