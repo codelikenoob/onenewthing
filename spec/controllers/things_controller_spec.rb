@@ -30,26 +30,26 @@ describe Web::ThingsController, type: :controller do
         it { post :create, params: { thing: FactoryGirl.attributes_for(:thing) } }
         it { get :edit, params: { id: thing } }
         it { patch :update, params: { id: thing,
-                                      thing: FactoryGirl.attributes_for(:thing, title: 'New title')} }
+        thing: FactoryGirl.attributes_for(:thing, title: 'New title')} }
         it { delete :destroy, params: { id: thing } }
       end
-    end
 
-    context 'does not touch database' do
-      it 'POST #create' do
-        expect {
-          post :create, params: { thing: FactoryGirl.attributes_for(:thing) }
-        }.not_to change(Thing, :count)
-      end
-      it 'PATCH #update' do
-        patch :update, params: { id: thing,
-                                 thing: FactoryGirl.attributes_for(:thing, title: 'New title')}
-        thing.reload
-        expect(thing.title).not_to eq('New title')
-      end
-      it 'DELETE #destroy' do
-        delete :destroy, params: { id: thing }
-        expect(Thing.exists?(thing.id)).to be_truthy
+      context 'does not touch database' do
+        it 'POST #create' do
+          expect {
+            post :create, params: { thing: FactoryGirl.attributes_for(:thing) }
+          }.not_to change(Thing, :count)
+        end
+        it 'PATCH #update' do
+          patch :update, params: { id: thing,
+          thing: FactoryGirl.attributes_for(:thing, title: 'New title')}
+          thing.reload
+          expect(thing.title).not_to eq('New title')
+        end
+        it 'DELETE #destroy' do
+          delete :destroy, params: { id: thing }
+          expect(Thing.exists?(thing.id)).to be_truthy
+        end
       end
     end
   end
@@ -131,13 +131,13 @@ describe Web::ThingsController, type: :controller do
         after(:each) { expect(response).to redirect_to(root_path) }
         it { get :edit, params: { id: thing } }
         it { patch :update, params: { id: thing,
-                                      thing: FactoryGirl.attributes_for(:thing, title: 'New title')} }
+        thing: FactoryGirl.attributes_for(:thing, title: 'New title')} }
         it { delete :destroy, params: { id: thing } }
       end
       context 'does not change database' do
         it 'PATCH #update' do
           patch :update, params: { id: thing,
-                                   thing: FactoryGirl.attributes_for(:thing, title: 'New title')}
+          thing: FactoryGirl.attributes_for(:thing, title: 'New title')}
           thing.reload
           expect(thing.title).not_to eq('New title')
         end
@@ -166,14 +166,14 @@ describe Web::ThingsController, type: :controller do
         describe 'PATCH #update (title)' do
           it 'finds appropriate thing' do
             patch :update, params: { id: thing,
-                                     thing: FactoryGirl.attributes_for(:thing, title: thing_2.title) }
+            thing: FactoryGirl.attributes_for(:thing, title: thing_2.title) }
             thing.reload
             expect(thing.users).not_to include(user)
             expect(thing_2.users).to include(user)
           end
           it 'does not find appropriate thing' do
             patch :update, params: { id: thing,
-                                     thing: FactoryGirl.attributes_for(:thing, title: 'very new title') }
+            thing: FactoryGirl.attributes_for(:thing, title: 'very new title') }
             thing.reload
             expect(thing.users).not_to include(user)
             expect(user.things.last.title).to eq('very new title')
@@ -191,12 +191,12 @@ describe Web::ThingsController, type: :controller do
         describe 'PATCH #update' do
           it 'renders :edit template' do
             patch :update, params: { id: thing,
-                                     thing: FactoryGirl.attributes_for(:thing, title: '') }
+            thing: FactoryGirl.attributes_for(:thing, title: '') }
             expect(response).to render_template(:edit)
           end
           it 'finds appropriate thing' do
             patch :update, params: { id: thing,
-                                     thing: FactoryGirl.attributes_for(:thing, title: '') }
+            thing: FactoryGirl.attributes_for(:thing, title: '') }
             thing.reload
             expect(thing.users).to include(user)
             expect(user.things.last.title).not_to eq('')
