@@ -5,15 +5,12 @@ describe Web::ThingsController, type: :controller do
   shared_examples 'public access to things' do
     describe 'GET #index' do
       before(:each) { get :index }
-
       it { expect(response).to render_template(:index) }
       it { expect(assigns(:things)).to eq(Thing.all) }
     end
-
     describe 'GET #show' do
       let(:thing) { create(:thing) }
       before(:each) { get :show, params: { id: thing } }
-
       it { expect(response).to render_template(:show) }
       it { expect(assigns(:thing)).to eq(thing) }
     end
@@ -22,7 +19,6 @@ describe Web::ThingsController, type: :controller do
   describe 'guest user' do
     it_behaves_like 'public access to things'
     let(:thing) { create(:thing) }
-
     describe 'CRUD methods' do
       context 'redirects to login page' do
         after(:each) { expect(response).to redirect_to(new_user_session_url) }
@@ -51,6 +47,7 @@ describe Web::ThingsController, type: :controller do
           expect(Thing.exists?(thing.id)).to be_truthy
         end
       end
+
     end
   end
 
@@ -58,16 +55,15 @@ describe Web::ThingsController, type: :controller do
     let(:user) { create(:user) }
     before { sign_in(user) }
     it_behaves_like 'public access to things'
-
     describe 'GET #new' do
       before(:each) { get :new }
       it { expect(response).to render_template(:new) }
       it { expect(assigns(:thing)).to be_a_new(Thing) }
     end
     describe 'POST #create' do
+
       context 'valid data, unexisting thing' do
         let(:valid_data) { attributes_for(:thing) }
-
         it 'redirects to thing#show' do
           post :create, params: { thing: valid_data }
           # not using assigns[:thing], because creating of thing goes in service
@@ -84,10 +80,10 @@ describe Web::ThingsController, type: :controller do
           expect(user.things.last.title).to eq(valid_data[:title])
         end
       end
+
       context 'vaild data, existing thing' do
         let!(:thing) { create(:thing) }
         let(:valid_data) { attributes_for(:thing, title: thing.title) }
-
         it 'redirects to thing#show' do
           post :create, params: { thing: valid_data }
           # not using assigns[:thing], because creating of thing goes in service
@@ -110,9 +106,9 @@ describe Web::ThingsController, type: :controller do
           }.not_to change(user.things, :count)
         end
       end
+
       context 'invalid data' do
         let(:invalid_data) { attributes_for(:thing, title: '') }
-
         it 'renders :new template' do
           post :create, params: { thing: invalid_data }
           expect(response).to render_template(:new)
@@ -127,6 +123,7 @@ describe Web::ThingsController, type: :controller do
 
     context 'user is not occupied thing' do
       let(:thing) { create(:thing) }
+
       context 'redirects to pundit path' do
         after(:each) { expect(response).to redirect_to(root_path) }
         it { get :edit, params: { id: thing } }
@@ -134,6 +131,7 @@ describe Web::ThingsController, type: :controller do
                                       thing: attributes_for(:thing, title: 'New title')} }
         it { delete :destroy, params: { id: thing } }
       end
+
       context 'does not change database' do
         it 'PATCH #update' do
           patch :update, params: { id: thing,
@@ -146,6 +144,7 @@ describe Web::ThingsController, type: :controller do
           expect(Thing.exists?(thing.id)).to be_truthy
         end
       end
+
     end
 
     context 'user is occupied thing' do
@@ -188,6 +187,7 @@ describe Web::ThingsController, type: :controller do
           end
         end
       end
+
       context 'does not touch database' do
         describe 'PATCH #update' do
           it 'renders :edit template' do
@@ -204,7 +204,7 @@ describe Web::ThingsController, type: :controller do
           end
         end
       end
-    end
 
+    end
   end
 end
