@@ -151,14 +151,30 @@ describe Web::ThingsController, type: :controller do
       let!(:thing) { create(:thing, users: [user]) }
       let!(:thing_2) { create(:thing) }
 
-      context 'redirects', skip: 'decide where to redirect users after actions' do
-        # TODO
+      context 'assigns right things to instance var and renders' do
+        describe 'GET #edit' do
+          before(:each) { get :edit, params: { id: thing } }
+          it { expect(assigns(:thing)).to eq(thing) }
+          it { expect(response).to render_template(:edit) }
+        end
       end
 
-      context 'assigns right things to instance var' do
-        it 'GET #edit' do
-          get :edit, params: { id: thing }
-          expect(assigns(:thing)).to eq(thing)
+      context 'redirects' do
+        describe 'PATCH #update' do
+          it 'finds appropriate thing' do
+            patch :update, params: { id: thing,
+                                     thing: attributes_for(:thing, title: thing_2.title) }
+            expect(response).to redirect_to(thing_path(thing_2))
+          end
+          it 'does not find appropriate thing' do
+            patch :update, params: { id: thing,
+                                     thing: attributes_for(:thing, title: 'very new title') }
+            expect(response).to redirect_to(thing_path(user.things.last))
+          end
+        end
+        describe 'DELETE #destroy' do
+          # TODO
+          it "redirects to user's dashboard"
         end
       end
 

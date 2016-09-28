@@ -27,8 +27,10 @@ class Web::ThingsController < Web::ApplicationController
 
   def update
     authorize @thing
-    if Thing.create_or_associate(thing_params, current_user)
+    @new_thing = Thing.create_or_associate(thing_params, current_user)
+    if @new_thing
       current_user.things.delete(@thing)
+      redirect_to thing_path(@new_thing)
     else
       render :edit
     end
