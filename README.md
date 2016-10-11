@@ -14,4 +14,5 @@
 4. Push to the remote branch (`git push origin my-new-feature`)
 
 **if you receive a permission error, contact *@frey* in slack**
+
 5. Create new Pull Request
