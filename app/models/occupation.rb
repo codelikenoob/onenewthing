@@ -11,6 +11,14 @@
 #
 
 class Occupation < ApplicationRecord
+  enum status: [ :in_progress, :finished, :dropped, :want_to ]
+
   belongs_to :user
   belongs_to :thing
+
+  validates :user_id, uniqueness: { scope: :thing_id }
+
+  def change_status(status)
+    self.status = status
+  end
 end
