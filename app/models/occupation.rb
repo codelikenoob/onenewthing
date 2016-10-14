@@ -17,8 +17,4 @@ class Occupation < ApplicationRecord
   belongs_to :thing
 
   validates :user_id, uniqueness: { scope: :thing_id }
-
-  def change_status(status)
-    self.status = status
-  end
 end
