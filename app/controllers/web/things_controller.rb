@@ -7,7 +7,7 @@ class Web::ThingsController < Web::ApplicationController
   end
 
   def show
-    @thing = Thing.find(params[:id]).includes(:occupations)
+    @thing = Thing.includes(:occupations).find(params[:id])
     @occupation = @thing.occupations.find_by(user: current_user)
   end
 

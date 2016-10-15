@@ -1,51 +1,61 @@
 require 'rails_helper'
 
 describe Web::OccupationsController, type: :controller do
-  let(:user) { create(:user) }
-  let(:thing) { create(:thing) }
-  let(:occupation) { Occupation.create(user: user, thing: thing, status: "in_progress") }
-
   describe 'guest user' do
+    let(:occupation) { create(:occupation) }
+
     describe 'PATCH #change_status' do
       it 'redirects to login page' do
-        patch :change_status, params: { occupation: { id: occupation, status: 1 } }
+        patch :change_status, params: { id: occupation, occupation: { status: 1 } }
         expect(response).to redirect_to(new_user_session_url)
       end
 
       it 'does not update record' do
-        patch :change_status, params: { occupation: { id: occupation, status: 1 } }
+        patch :change_status, params: { id: occupation, occupation: { status: 1 } }
         occupation.reload
-        expect(occupation.status).not_to eq("finished")
+        expect(occupation.status).not_to eq('finished')
       end
     end
   end
 
   describe 'authenticated user' do
+    let(:user) { create(:user) }
     before { sign_in(user) }
 
     describe 'PATCH #change_status' do
-      context 'with user occupation' do
+      context 'own occupation' do
+        let(:occupation) { create(:occupation, user: user) }
+
         it 'changes occupation status' do
-          patch :change_status, params: { occupation: { id: occupation, status: 1 } }
+          patch :change_status, params: { id: occupation, occupation: { status: 1 } }
           occupation.reload
-          expect(occupation.status).to eq("finished")
+          expect(occupation.status).to eq('finished')
         end
 
-        it 'redirects to root path' do
-          patch :change_status, params: { occupation: { id: occupation, status: 1 } }
-          expect(response).to redirect_to(root_path)
+        it 'redirects to root url' do
+          patch :change_status, params: { id: occupation, occupation: { status: 1 } }
+          expect(response).to redirect_to(root_url)
         end
       end
 
-      context 'with another occupation' do
-        let(:another_user) { create(:user) }
-        let(:another_thing) { create(:thing) }
-        let(:another_occupation) { Occupation.create(user: another_user, thing: another_thing, status: "in_progress") }
+      context "someone else's occupation" do
+        let(:another_occupation) { create(:occupation) }
 
-        it 'can not change occupation status' do
-          expect { 
-            patch :change_status, params: { occupation: { id: another_occupation, status: 1 } }
-          }.to raise_error(ActiveRecord::RecordNotFound)
+        it 'does not change database' do
+          patch :change_status, params: { id: another_occupation, occupation: { status: 1 } }
+          another_occupation.reload
+          expect(another_occupation.status).not_to eq('finished')
+        end
+
+        it 'redirects back if referrer exists' do
+          request.env["HTTP_REFERER"] = 'http://example.com'
+          patch :change_status, params: { id: another_occupation, occupation: { status: 1 } }
+          expect(response).to redirect_to('http://example.com')
+        end
+
+        it 'redirects to root url if referrer does not exist' do
+          patch :change_status, params: { id: another_occupation, occupation: { status: 1 } }
+          expect(response).to redirect_to(root_url)
         end
       end
     end

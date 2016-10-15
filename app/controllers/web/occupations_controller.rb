@@ -2,10 +2,11 @@ class Web::OccupationsController < Web::ApplicationController
   before_action :authenticate_user!
 
   def change_status
-    occupation = current_user.occupations.find(occupation_params[:id])
+    occupation = Occupation.find(params[:id])
+    authorize occupation
     occupation.status = occupation_params[:status].to_i
     if occupation.save
-      redirect_to root_path
+      redirect_to root_path # Change it later
     else
       redirect_back(fallback_location: root_path)
     end
@@ -14,6 +15,6 @@ class Web::OccupationsController < Web::ApplicationController
   private
 
   def occupation_params
-    params.require(:occupation).permit(:id, :status)
+    params.require(:occupation).permit(:status)
   end
 end

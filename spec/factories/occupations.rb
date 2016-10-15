@@ -10,11 +10,10 @@
 #  status     :integer
 #
 
-class Occupation < ApplicationRecord
-  enum status: [:in_progress, :finished, :dropped, :want_to]
-
-  belongs_to :user
-  belongs_to :thing
-
-  validates :user_id, uniqueness: { scope: :thing_id }
+FactoryGirl.define do
+  factory :occupation do
+    user
+    thing
+    status :in_progress
+  end
 end

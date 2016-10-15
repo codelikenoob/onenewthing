@@ -14,7 +14,6 @@ Rails.application.routes.draw do
       }
       # Devise routing end
       resources :things
-      patch '/change_status' => 'occupations#change_status', as: 'change_status'
+      patch '/occupations/:id/change_status' => 'occupations#change_status', as: 'change_status'
   end
 end
-
