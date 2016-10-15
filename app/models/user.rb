@@ -35,8 +35,7 @@ class User < ApplicationRecord
     format: {
       # this validation to avoid conflict between name and email of different
       # users due signing in.
-      with: /^[a-zA-Z0-9_\.]*$/,
-      multiline: true
+      with: /\A[a-zA-Z0-9_\.]*\z/
     }
 
     def associate(thing)
