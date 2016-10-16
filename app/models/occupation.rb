@@ -7,7 +7,7 @@
 #  thing_id   :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  status     :integer
+#  status     :integer          not null, default: 0
 #
 
 class Occupation < ApplicationRecord

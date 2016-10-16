@@ -148,7 +148,7 @@ describe Web::ThingsController, type: :controller do
     end
 
     context 'user is occupied thing' do
-      let!(:thing) { create(:thing, users: [user]) }
+      let!(:thing) { create(:thing, user: user) }
       let!(:thing_2) { create(:thing) }
 
       context 'assigns right things to instance var and renders' do
