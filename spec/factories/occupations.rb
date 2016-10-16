@@ -12,8 +12,8 @@
 
 FactoryGirl.define do
   factory :occupation do
-    user
-    thing
+    association :user
+    association :thing
     status :in_progress
   end
 end

@@ -4,7 +4,7 @@ class Web::OccupationsController < Web::ApplicationController
   def change_status
     occupation = Occupation.find(params[:id])
     authorize occupation
-    occupation.status = occupation_params[:status].to_i
+    occupation.status = occupation_params[:status]
     if occupation.save
       redirect_to root_path # Change it later
     else
