@@ -13,6 +13,7 @@
 require 'rails_helper'
 
 describe Occupation, type: :model do
-  it { belong_to(:user) }
-  it { belong_to(:thing) }
+  it { should belong_to(:user) }
+  it { should belong_to(:thing) }
+  it { should validate_uniqueness_of(:user_id).scoped_to(:thing_id) }
 end

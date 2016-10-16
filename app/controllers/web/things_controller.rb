@@ -1,12 +1,15 @@
 class Web::ThingsController < Web::ApplicationController
-  before_action :set_thing, only: [:show, :edit, :update, :destroy]
+  before_action :set_thing, only: [:edit, :update, :destroy]
   before_action :authenticate_user!, except: [:index, :show]
 
   def index
     @things = Thing.all
   end
 
-  def show; end
+  def show
+    @thing = Thing.includes(:occupations).find(params[:id])
+    @occupation = @thing.occupations.find_by(user: current_user)
+  end
 
   def new
     @thing = Thing.new
