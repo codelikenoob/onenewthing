@@ -5,7 +5,7 @@ describe Web::OccupationsController, type: :controller do
     let(:occupation) { create(:occupation) }
 
     describe 'PATCH #change_status' do
-      before(:each) { patch :change_status, params: { id: occupation, occupation: { status: 1 } } }
+      before(:each) { patch :change_status, params: { id: occupation, occupation: { status: 'finished' } } }
 
       it 'redirects to login page' do
         expect(response).to redirect_to(new_user_session_url)
@@ -25,7 +25,7 @@ describe Web::OccupationsController, type: :controller do
     describe 'PATCH #change_status' do
       context 'own occupation' do
         let(:occupation) { create(:occupation, user: user) }
-        before(:each) { patch :change_status, params: { id: occupation, occupation: { status: 1 } } }
+        before(:each) { patch :change_status, params: { id: occupation, occupation: { status: 'finished' } } }
 
         it 'changes occupation status' do
           occupation.reload
@@ -41,19 +41,19 @@ describe Web::OccupationsController, type: :controller do
         let(:another_occupation) { create(:occupation) }
 
         it 'does not change database' do
-          patch :change_status, params: { id: another_occupation, occupation: { status: 1 } }
+          patch :change_status, params: { id: another_occupation, occupation: { status: 'finished' } }
           another_occupation.reload
           expect(another_occupation.status).not_to eq('finished')
         end
 
         it 'redirects back if referrer exists' do
           request.env["HTTP_REFERER"] = 'http://example.com'
-          patch :change_status, params: { id: another_occupation, occupation: { status: 1 } }
+          patch :change_status, params: { id: another_occupation, occupation: { status: 'finished' } }
           expect(response).to redirect_to('http://example.com')
         end
 
         it 'redirects to root url if referrer does not exist' do
-          patch :change_status, params: { id: another_occupation, occupation: { status: 1 } }
+          patch :change_status, params: { id: another_occupation, occupation: { status: 'finished' } }
           expect(response).to redirect_to(root_url)
         end
       end
