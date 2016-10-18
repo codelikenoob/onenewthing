@@ -7,7 +7,7 @@
 #  thing_id   :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  status     :integer
+#  status     :integer          not null, default: 0
 #
 
 class Occupation < ApplicationRecord
@@ -16,5 +16,7 @@ class Occupation < ApplicationRecord
   belongs_to :user
   belongs_to :thing
 
+  validates :thing_id, presence: true
+  validates :user_id, presence: true
   validates :user_id, uniqueness: { scope: :thing_id }
 end

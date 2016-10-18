@@ -10,7 +10,12 @@
 #
 FactoryGirl.define do
   factory :thing do
+    transient { user nil }
     sequence(:title) { |n| "title_#{n}" }
     description 'test_description_string'
+
+    after(:create) do |thing, evaluator|
+      evaluator.user.things << thing if evaluator.user
+    end
   end
 end

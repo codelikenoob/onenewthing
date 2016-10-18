@@ -12,5 +12,8 @@
 require 'rails_helper'
 
 describe Thing, type: :model do
-  it { have_many(:users).through(:occupation) }
+  it { should have_many(:occupations) }
+  it { should have_many(:users).through(:occupations) }
+  it { should validate_presence_of(:title) }
+  it { should validate_uniqueness_of(:title) }
 end

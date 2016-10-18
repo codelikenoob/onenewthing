@@ -21,5 +21,9 @@
 require 'rails_helper'
 
 describe User, type: :model do
-  it { have_many(:things).through(:occupation) }
+  it { should have_many(:occupations) }
+  it { should have_many(:things).through(:occupations) }
+  it { should validate_presence_of(:name) }
+  it { should validate_uniqueness_of(:name).ignoring_case_sensitivity }
+  it { should allow_value('A.z_0').for(:name) }
 end
