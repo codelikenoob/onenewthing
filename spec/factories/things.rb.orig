@@ -1,0 +1,29 @@
+# == Schema Information
+#
+# Table name: things
+#
+#  id          :integer          not null, primary key
+#  title       :string
+#  description :text
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+FactoryGirl.define do
+  factory :thing do
+    transient { user nil }
+    sequence(:title) { |n| "title_#{n}" }
+    description 'test_description_string'
+<<<<<<< 64f76e96e3fb867663143eeb8161e7ae5b327935
+
+    after(:create) do |thing, evaluator|
+      evaluator.user.things << thing if evaluator.user
+    end
+||||||| merged common ancestors
+=======
+
+    factory :thing_faker do
+       sequence(:title) { "#{Faker::Lorem.word} #{SecureRandom.hex(3)}" }
+    end
+>>>>>>> added rake task to creating test things for views
+  end
+end
