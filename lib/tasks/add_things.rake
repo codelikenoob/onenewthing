@@ -1,7 +1,7 @@
 require 'ruby-progressbar'
 
 namespace :db do
-  desc "Add things"
+  desc 'Add things'
   task :add_things, [:count] => [:environment] do |t, args|
     args.with_defaults(count: 10)
     puts "Creating #{args[:count]} things"
