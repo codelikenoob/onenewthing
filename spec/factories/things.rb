@@ -17,5 +17,9 @@ FactoryGirl.define do
     after(:create) do |thing, evaluator|
       evaluator.user.things << thing if evaluator.user
     end
+
+    factory :thing_faker do
+       sequence(:title) { "#{Faker::Lorem.word} #{SecureRandom.hex(3)}" }
+    end
   end
 end
