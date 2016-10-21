@@ -13,6 +13,7 @@ gem 'bootstrap-sass', '~> 3.3.6'
 gem 'devise'
 gem 'simple_form'
 gem 'pundit'
+gem 'ruby-progressbar', require: false
 
 group :development, :test do
   gem 'byebug', platform: :mri
