@@ -10,7 +10,7 @@ RSpec.describe ReminderMailer, type: :mailer do
   end
 
   it 'has related thing in body message' do
-    expect(email.body.to_s).to have_content(thing.title)
+    expect(email.body).to have_content(thing.title)
   end
 
   it 'has link to thing in body message' do
