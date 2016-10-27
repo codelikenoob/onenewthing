@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe ReminderMailer, type: :mailer do
   let!(:user) { create(:user) }
-  let!(:thing) { create(:thing, title: "My thing", user: user) }
+  let!(:thing) { create(:thing, title: 'My thing', user: user) }
   let(:email) { ReminderMailer.reminder(user).deliver_now }
 
   it 'sends reminder email to user' do
