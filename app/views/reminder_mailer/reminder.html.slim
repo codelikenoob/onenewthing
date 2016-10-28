@@ -1,6 +1,6 @@
-| Вы не забыли, что вы хотели в ближайшие 30 дней позаниматься
+| Friendly reminder! You wanted to work on #{@occupations.size > 1 ? "these occupatuons" : "this occupation"}:
 table
   - @occupations.each do |o|
     tr
       td= o.thing.title
-      td= link_to 'Изменить статус', thing_url(o.thing)
+      td= link_to 'Change status', thing_url(o.thing)

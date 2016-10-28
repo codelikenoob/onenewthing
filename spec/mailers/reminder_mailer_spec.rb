@@ -14,6 +14,6 @@ RSpec.describe ReminderMailer, type: :mailer do
   end
 
   it 'has link to thing in body message' do
-    expect(email.body).to have_link('Изменить статус', href: thing_url(thing))
+    expect(email.body).to have_link('Change status', href: thing_url(thing))
   end
 end
