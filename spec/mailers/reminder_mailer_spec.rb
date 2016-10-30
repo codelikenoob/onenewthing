@@ -6,7 +6,7 @@ RSpec.describe ReminderMailer, type: :mailer do
   let(:email) { ReminderMailer.reminder(user).deliver_now }
 
   it 'sends reminder email to user' do
-    expect(email.to).to include(user.email)
+    expect(email.to).to eq([user.email])
   end
 
   it 'has related thing in body message' do
