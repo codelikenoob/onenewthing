@@ -1,4 +1,4 @@
-| Friendly reminder! You wanted to work on #{@occupations.size > 1 ? "these things" : "this thing"}:
+| Friendly reminder! You wanted to work on #{this_thing(@occupations.size)}:
 table
   - @occupations.each do |o|
     tr

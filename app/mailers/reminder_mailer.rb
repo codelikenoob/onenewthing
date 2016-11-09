@@ -1,4 +1,6 @@
 class ReminderMailer < ApplicationMailer
+  helper MailerHelper
+
   def reminder(user)
     @user = user
     @occupations = @user.occupations.includes(:thing).where(status: :in_progress)

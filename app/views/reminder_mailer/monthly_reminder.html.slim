@@ -1,4 +1,4 @@
-| Hi! You have been working on #{@occupations.size > 1 ? "these things" : "this thing"} for a month. It would be great if you could share your thoughts!
+| Hi! You have been working on #{this_thing(@occupations.size)} for a month. It would be great if you could share your thoughts!
 ul
   - @occupations.each do |o|
     li= link_to o.thing.title, thing_url(o.thing)
