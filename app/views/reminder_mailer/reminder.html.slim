@@ -1,0 +1,6 @@
+| Friendly reminder! You wanted to work on #{this_thing(@occupations)}:
+table
+  - @occupations.each do |o|
+    tr
+      td= o.thing.title
+      td= link_to 'Change status', thing_url(o.thing)
