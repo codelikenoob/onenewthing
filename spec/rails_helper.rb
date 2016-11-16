@@ -5,16 +5,18 @@ if Rails.env.production?
 end
 require 'spec_helper'
 require 'rspec/rails'
+require 'sidekiq/testing'
 require 'database_cleaner'
 # require 'devise'
 
+Sidekiq::Testing.fake!
 ActiveRecord::Migration.maintain_test_schema!
 Capybara.javascript_driver = :webkit
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
   config.include Warden::Test::Helpers
-   config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include Devise::Test::ControllerHelpers, type: :controller
 
   config.use_transactional_fixtures = false
   config.infer_spec_type_from_file_location!

@@ -14,6 +14,7 @@ gem 'devise'
 gem 'simple_form'
 gem 'pundit'
 gem 'ruby-progressbar', require: false
+gem 'sidekiq'
 
 group :development, :test do
   gem 'byebug', platform: :mri
